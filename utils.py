@@ -1,11 +1,12 @@
 import numpy as np
 
 
-def RotationMatrix(theta: float) -> np.ndarray:
+def Rotation2D(theta: float) -> np.ndarray:
     return np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]])
 
 
 class Rotation:
+    @staticmethod
     def Z(theta: float) -> np.ndarray:
         return np.array(
             [
@@ -15,6 +16,7 @@ class Rotation:
             ]
         )
 
+    @staticmethod
     def Y(theta: float) -> np.ndarray:
         return np.array(
             [
@@ -24,6 +26,7 @@ class Rotation:
             ]
         )
 
+    @staticmethod
     def X(theta: float) -> np.ndarray:
         return np.array(
             [

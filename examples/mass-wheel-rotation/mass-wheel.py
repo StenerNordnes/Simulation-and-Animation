@@ -1,20 +1,11 @@
-import sys
-import os
 import numpy as np
 from functools import partial
 from numpy.typing import NDArray
-
-# Add the parent directory to sys.path
-current_dir = os.path.dirname(os.path.abspath(__file__))
-parent_dir = os.path.dirname(current_dir)
-project_root_dir = os.path.dirname(parent_dir)  # Get the project root directory
-sys.path.append(project_root_dir)  # Add the project root to sys.path
-
-from numerical_solver import (  # noqa: E402
+from solver.numerical_solver import (
     NumericalSolver,
     rk4_tableau,
 )
-from animatableObjects import (  # noqa: E402
+from animation.objects import ( 
     Circle,
     ConnectiveRod,
     Rectangle,
@@ -167,7 +158,7 @@ def mass_on_cart_system() -> NDArray[np.float64]:
     return solution
 
 
-if __name__ == "__main__":
+def main():
     N = 200
     h = 0.01
     T = 5
@@ -200,3 +191,7 @@ if __name__ == "__main__":
     )
 
     rod.plot_length()
+
+
+if __name__ == "__main__":
+    main()

@@ -1,16 +1,6 @@
-import os
-import sys
-
 import matplotlib.pyplot as plt
 import numpy as np
-
-# Add the parent directory to sys.path
-current_dir = os.path.dirname(os.path.abspath(__file__))
-parent_dir = os.path.dirname(current_dir)
-project_root_dir = os.path.dirname(parent_dir)  # Get the project root directory
-sys.path.append(project_root_dir)  # Add the project root to sys.path
-
-from animatableObjects import (  # noqa: E402
+from animation.objects import (
     Circle,
     ConnectiveRod,
     ConnectiveSpring,
@@ -18,7 +8,7 @@ from animatableObjects import (  # noqa: E402
     Triangle,
     animate_objects,
 )
-from numerical_solver import (  # noqa: E402
+from solver.numerical_solver import (
     NumericalSolver,
     rk4_tableau,
 )
@@ -144,7 +134,7 @@ def profiling():
     plt.show()
 
 
-if __name__ == "__main__":
+def main():
     N = 300
     h = 0.01
     T = 10 * np.pi
@@ -197,3 +187,7 @@ if __name__ == "__main__":
         xlabel="X Position",
         ylabel="Y Position",
     )
+
+
+if __name__ == "__main__":
+    main()

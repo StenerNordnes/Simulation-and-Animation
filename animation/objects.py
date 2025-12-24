@@ -6,14 +6,8 @@ import matplotlib.patches as patches
 import matplotlib.path as mpath  # Import Path
 import matplotlib.pyplot as plt
 import numpy as np
-from numerical_solver import (
-    NumericalSolver,
-    mass_on_cart_system,
-    rk4_tableau,
-    spring_pendulum,
-)
 from numpy.typing import NDArray
-from utils import RotationMatrix
+from utils import Rotation2D
 
 
 class AnimatableObject(ABC):
@@ -108,7 +102,7 @@ class Rectangle(AnimatableObject):
             self.patch.remove()
 
         current_angle = self.angles[frame_index]
-        rot_matrix = RotationMatrix(current_angle)
+        rot_matrix = Rotation2D(current_angle)
 
         v1 = center_coords + rot_matrix @ np.array([-self.length / 2, -self.width / 2])
         v2 = center_coords + rot_matrix @ np.array([-self.length / 2, self.width / 2])
@@ -155,7 +149,7 @@ class Triangle(AnimatableObject):
         # Vertices relative to the center (0,0)
         current_angle = self.angles[frame_index]
 
-        rot_mat = RotationMatrix(current_angle)
+        rot_mat = Rotation2D(current_angle)
         h, s = self.height, self.side_length
         v1_rel = rot_mat @ np.array([0, h * 2 / 3])
         v2_rel = rot_mat @ np.array([-s / 2, -h / 3])
@@ -243,7 +237,7 @@ class ConnectiveRod(AnimatableObject):
         diff_vec = self.object1.get_coords() - self.object2.get_coords()
         obj1_coords = self.object1.get_coords()
 
-        offset_vec = RotationMatrix(np.pi / 2) @ diff_vec
+        offset_vec = Rotation2D(np.pi / 2) @ diff_vec
         self.x, self.y = obj1_coords - diff_vec / 2
         offset_vec = offset_vec * self.width / np.linalg.norm(offset_vec)
 
@@ -312,7 +306,7 @@ class ConnectiveSpring(AnimatableObject):
         len_end_straight: float = 0.5,  # Length of straight section at object2 end
         line_width: float = 1.0,  # Thickness of the spring line
         color: str = "green",  # Color of the spring
-        show_trajectory: bool = True,
+        show_trajectory: bool = False,
     ):
         # Spring doesn't have its own independent trajectory, calculated based on objects
         # We still need a placeholder trajectory for the AnimatableObject structure
@@ -340,7 +334,8 @@ class ConnectiveSpring(AnimatableObject):
         self.color = color
 
         # Patch will be a PathPatch
-        self.patch: patches.PathPatch | None = None
+        # self.patch is inherited from AnimatableObject (patches.Patch | None)
+        # A PathPatch is a Patch, so this is fine.
 
     def _make_spring_path(self) -> mpath.Path:
         """Creates the Matplotlib Path for the spring shape."""
@@ -374,7 +369,7 @@ class ConnectiveSpring(AnimatableObject):
             # Length of one full zigzag along the spring axis
             coil_segment_len = L_coils / self.num_coils
             # Number of points per half-coil (straight segment in zigzag)
-            points_per_coil = 4
+            # points_per_coil = 4
 
             current_pos = p_start_coil
             for i in range(self.num_coils):
@@ -626,9 +621,7 @@ def animate_objects(
             writer_name = (
                 "ffmpeg"
                 if save_path.endswith(".mp4")
-                else "pillow"
-                if save_path.endswith(".gif")
-                else None
+                else "pillow" if save_path.endswith(".gif") else None
             )
             if writer_name:
                 ani.save(save_path, writer=writer_name, dpi=150)
@@ -647,117 +640,3 @@ def animate_objects(
             plt.show()
     else:
         plt.show()
-
-
-def spring_pendulum_setup():
-    N = 300
-    h = 0.01
-    T = 10 * np.pi
-
-    t = np.linspace(0, T, N)
-
-    initial_state = np.array([0.5, 1, np.pi / 6, 0.1])
-    solver = NumericalSolver(rk4_tableau, spring_pendulum, profiling=True)
-    solution = solver.solve(initial_state, 0, T, h)
-
-    # Truncate the solution to the desired number of points
-    indices = np.linspace(0, int(T / h) - 1, N, dtype=int)
-    angle = solution[indices, 2] + np.pi
-    z = solution[indices, 0]
-
-    L = 5
-    x2 = L * np.sin(angle)
-    sim_y = z + L * np.cos(angle)
-    trajectory2 = np.vstack((x2, sim_y)).T
-    triangleRotationAngle = -angle
-    triangle = Triangle(
-        trajectory2, angle=triangleRotationAngle, side_length=2, show_trajectory=True
-    )
-
-    x1 = t * 0
-    y1 = z
-    trajectory1 = np.vstack((x1, y1)).T
-    rectangle = Circle(trajectory1, radius=1)
-
-    x21 = t * 0
-    y21 = np.ones(t.shape) * 5
-    trajectory2 = np.vstack((x21, y21)).T
-    staticRectangle = Rectangle(trajectory2, length=5, width=1)
-
-    rod = ConnectiveRod(rectangle, triangle, width=0.1)
-    spring2 = ConnectiveSpring(
-        staticRectangle,
-        rectangle,
-        num_coils=5,
-        len_end_straight=1,
-        len_start_straight=1,
-    )
-
-    animate_objects(
-        [triangle, rectangle, staticRectangle, rod, spring2],  # Rod is last
-        interval=40,
-        title="Object Animation",
-        xlabel="X Position",
-        ylabel="Y Position",
-    )
-
-
-def beam_ball(t: float, state: NDArray[np.float64]):
-    M = 10
-    g = 9.81
-    R = 10
-
-    x, theta = state
-
-    td = np.sqrt(-g * np.sin(theta) / (x * M))
-
-    xd = (
-        M * g * (R * np.sin(theta) - x * np.cos(theta))
-        - 200 * theta
-        - 70 * td
-        + 200 * x
-    ) / -70
-
-    return np.array([xd, td])
-
-
-if __name__ == "__main__":
-    N = 200
-    h = 0.01
-    T = 5
-
-    t = np.linspace(0, T, N)
-
-    # solver = NumericalSolver(rk4_tableau, beam_ball)
-
-    # init = np.array([-0.5, 1])
-    # solution = solver.solve(init, 0, T, h)
-
-    # theta = solution[:, 1]
-
-    sol = mass_on_cart_system()
-    indices = np.linspace(0, int(T / h) - 1, N, dtype=int)
-    theta = sol[indices, 1] + np.pi
-    x = sol[indices, 2]
-
-    x21 = t * 0
-    y21 = x
-    trajectory2 = np.vstack((x21, y21)).T
-    plane = Rectangle(trajectory2, length=2, width=2)
-
-    x1 = np.cos(theta) * 0.5
-    y1 = np.sin(theta) * 0.5
-    trajectory1 = np.vstack((x1, y1)).T
-
-    circle = Circle(trajectory1, radius=0.5)
-    rod = ConnectiveRod(circle, plane, width=0.1)
-
-    animate_objects(
-        [plane, circle, rod],  # Rod is last
-        interval=h * 1000,
-        title="Object Animation",
-        xlabel="X Position",
-        ylabel="Y Position",
-    )
-
-    rod.plot_length()

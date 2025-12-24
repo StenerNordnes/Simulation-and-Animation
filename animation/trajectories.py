@@ -1,51 +1,99 @@
 import numpy as np
-
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
+# Default colors for trajectories if not specified
+DEFAULT_TRAJECTORY_COLORS = [
+    "blue",
+    "green",
+    "red",
+    "cyan",
+    "magenta",
+    "yellow",
+    "black",
+    "purple",
+    "orange",
+    "brown",
+]
+
 
 def animate_trajectory(
-    trajectory: np.ndarray,
+    trajectories: list[np.ndarray] | np.ndarray,
     interval: int = 20,
-    title: str = "Dot Trajectory Animation",
+    title: str = "Trajectories Animation",
     xlabel: str = "X-axis",
     ylabel: str = "Y-axis",
     save_path: str | None = None,
     legend: bool = True,
+    show_grid=True,
+    trajectory_labels: list[str] | None = None,
+    trajectory_colors: list[str] | None = None,
 ):
     """
-    Animates the trajectory of a dot based on a NumPy array.
+    Animates the trajectories of multiple dots based on a list of NumPy arrays.
 
     Args:
-        trajectory (np.ndarray): A NumPy array of shape (N, 2) where N is
-                                 the number of time steps, and each row
-                                 represents the (x, y) coordinates of the dot.
+        trajectories (list[np.ndarray]): A list of NumPy arrays. Each array
+                                         should have shape (N_i, 2) where N_i is
+                                         the number of time steps for trajectory i,
+                                         and each row represents the (x, y) coordinates.
         interval (int): Delay between frames in milliseconds. Defaults to 20.
-        title (str): The title of the plot. Defaults to 'Dot Trajectory Animation'.
+        title (str): The title of the plot. Defaults to 'Trajectories Animation'.
         xlabel (str): The label for the x-axis. Defaults to 'X-axis'.
         ylabel (str): The label for the y-axis. Defaults to 'Y-axis'.
         save_path (str, optional): If provided, saves the animation to this
                                    file path (e.g., 'animation.gif' or 'animation.mp4').
-                                   Requires appropriate writers installed (e.g., Pillow for GIF,
-                                   ffmpeg for MP4). Defaults to None (displays animation).
+                                   Requires appropriate writers installed. Defaults to None.
+        legend (bool): Whether to display the legend. Defaults to True.
+        trajectory_labels (list[str], optional): A list of labels for each trajectory.
+                                                 If None, default labels are used.
+        trajectory_colors (list[str], optional): A list of colors for each trajectory.
+                                                 If None, default colors are used.
     """
-    if not isinstance(trajectory, np.ndarray):
-        raise TypeError("trajectory must be a NumPy array.")
-    if trajectory.ndim != 2 or trajectory.shape[1] != 2:
-        raise ValueError("trajectory must have shape (N, 2).")
-    if len(trajectory) == 0:
-        print("Warning: Trajectory is empty. Nothing to animate.")
+    if not isinstance(trajectories, list):
+        # raise TypeError("trajectories must be a list of NumPy arrays.")
+        trajectories = [trajectories]
+    if not trajectories:
+        print("Warning: No trajectories provided. Nothing to animate.")
+        return
+
+    valid_trajectories = []
+    for i, traj in enumerate(trajectories):
+        if not isinstance(traj, np.ndarray):
+            print(f"Warning: Trajectory {i} is not a NumPy array. Skipping.")
+            continue
+        if traj.ndim != 2 or traj.shape[1] != 2:
+            print(
+                f"Warning: Trajectory {i} has incorrect shape {traj.shape}. Expected (N, 2). Skipping."
+            )
+            continue
+        if len(traj) == 0:
+            print(f"Warning: Trajectory {i} is empty. Skipping.")
+            continue
+        valid_trajectories.append(traj)
+
+    if not valid_trajectories:
+        print("Warning: No valid trajectories to animate after filtering.")
+        return
+    trajectories = valid_trajectories
+
+    max_frames = 0
+    for traj in trajectories:
+        max_frames = max(max_frames, len(traj))
+
+    if max_frames == 0:
+        print("Warning: All trajectories are effectively empty. Nothing to animate.")
         return
 
     fig, ax = plt.subplots()
 
     # Determine plot limits with a small margin
-    min_vals = np.min(trajectory, axis=0)
-    max_vals = np.max(trajectory, axis=0)
+    all_points = np.vstack(trajectories)
+    min_vals = np.min(all_points, axis=0)
+    max_vals = np.max(all_points, axis=0)
     range_vals = max_vals - min_vals
     margin = range_vals * 0.1  # 10% margin
-    # Handle cases where range is zero
-    margin[range_vals == 0] = 1.0
+    margin[range_vals == 0] = 1.0  # Handle cases where range is zero
 
     ax.set_xlim(min_vals[0] - margin[0], max_vals[0] + margin[0])
     ax.set_ylim(min_vals[1] - margin[1], max_vals[1] + margin[1])
@@ -53,52 +101,67 @@ def animate_trajectory(
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
     ax.set_title(title)
-    ax.set_aspect("equal", adjustable="box")  # Ensure aspect ratio is equal
-    ax.grid(True)
+    ax.set_aspect("equal", adjustable="box")
+    ax.grid(show_grid)
 
-    # Initialize the plot elements: the dot and the path trace
-    (dot,) = ax.plot([], [], "bo", ms=6, label="Current Position")  # Blue dot
-    (line,) = ax.plot([], [], "r-", lw=1, label="Path Taken")  # Red line for path
+    dot_artists = []
+    line_artists = []
+
+    colors_to_use = (
+        trajectory_colors if trajectory_colors else DEFAULT_TRAJECTORY_COLORS
+    )
+
+    for i, traj in enumerate(trajectories):
+        color = colors_to_use[i % len(colors_to_use)]
+        label = (
+            trajectory_labels[i]
+            if trajectory_labels and i < len(trajectory_labels)
+            else f"Trajectory {i + 1}"
+        )
+
+        (dot,) = ax.plot([], [], "o", ms=6, color=color)  # Dot for current position
+        (line,) = ax.plot(
+            [], [], "-", lw=1, color=color, label=label
+        )  # Line for path taken
+        dot_artists.append(dot)
+        line_artists.append(line)
 
     if legend:
         ax.legend()
 
-    # Initialization function: plot the background of each frame
+    all_artists_tuple = tuple(dot_artists + line_artists)
+
     def init():
-        dot.set_data([], [])
-        line.set_data([], [])
-        return dot, line
+        for dot in dot_artists:
+            dot.set_data([], [])
+        for line in line_artists:
+            line.set_data([], [])
+        return all_artists_tuple
 
-    # Animation function: this is called sequentially
     def update(frame):
-        # Update the dot's position
-        current_pos = trajectory[frame]
-        dot.set_data([current_pos[0]], [current_pos[1]])
+        for i, traj in enumerate(trajectories):
+            if frame < len(traj):
+                current_pos = traj[frame]
+                dot_artists[i].set_data([current_pos[0]], [current_pos[1]])
 
-        # Update the path trace up to the current frame
-        path_so_far = trajectory[: frame + 1]
-        line.set_data(path_so_far[:, 0], path_so_far[:, 1])
+                path_so_far = traj[: frame + 1]
+                line_artists[i].set_data(path_so_far[:, 0], path_so_far[:, 1])
+            # If frame >= len(traj), the trajectory has ended; its artists remain as they were.
+        return all_artists_tuple
 
-        return dot, line
-
-    # Create the animation
     ani = animation.FuncAnimation(
         fig,
         update,
-        frames=len(trajectory),
+        frames=max_frames,
         init_func=init,
         interval=interval,
         blit=True,
         repeat=False,
     )
 
-    # Save or show the animation
     if save_path:
         try:
             print(f"Saving animation to {save_path}...")
-            # You might need to install ffmpeg or pillow
-            # For GIF: writer='pillow'
-            # For MP4: writer='ffmpeg'
             writer_name = (
                 "ffmpeg"
                 if save_path.endswith(".mp4")
@@ -111,14 +174,14 @@ def animate_trajectory(
                 print(
                     f"Warning: Unknown file extension for saving. Could not save to {save_path}."
                 )
-                plt.show()  # Fallback to showing
+                plt.show()
         except Exception as e:
             print(f"Error saving animation: {e}")
             print(
                 "Make sure you have the required writer installed (e.g., 'pip install Pillow' for GIF, or install ffmpeg)."
             )
             print("Displaying animation instead.")
-            plt.show()  # Fallback to showing if saving fails
+            plt.show()
     else:
         plt.show()
 
@@ -276,4 +339,4 @@ if __name__ == "__main__":
     x_2d = np.cos(t_2d)
     y_2d = np.sin(t_2d) * 0.5  # Ellipse
     trajectory_2d_data = np.vstack((x_2d, y_2d)).T
-    animate_trajectory(trajectory_2d_data, title="Ellipse Trajectory")
+    animate_trajectory([trajectory_2d_data], title="Ellipse Trajectory")
