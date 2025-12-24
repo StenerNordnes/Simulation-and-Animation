@@ -165,7 +165,9 @@ def animate_trajectory(
             writer_name = (
                 "ffmpeg"
                 if save_path.endswith(".mp4")
-                else "pillow" if save_path.endswith(".gif") else None
+                else "pillow"
+                if save_path.endswith(".gif")
+                else None
             )
             if writer_name:
                 ani.save(save_path, writer=writer_name, dpi=150)
@@ -293,7 +295,9 @@ def animate_trajectory_3d(
             writer_name = (
                 "ffmpeg"
                 if save_path.endswith(".mp4")
-                else "pillow" if save_path.endswith(".gif") else None
+                else "pillow"
+                if save_path.endswith(".gif")
+                else None
             )
             if writer_name:
                 # Lower dpi might be needed for performance with 3D

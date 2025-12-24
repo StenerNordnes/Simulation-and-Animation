@@ -1,8 +1,8 @@
-import examples
+from examples import spring_pendulum_main, mass_wheel_main, two_planets_main
 
 
 def main():
-    examples.two_planets_main()
+    two_planets_main()
 
 
 if __name__ == "__main__":

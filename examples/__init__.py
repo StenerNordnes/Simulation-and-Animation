@@ -13,13 +13,13 @@ def _load_module_from_file(module_name, file_path):
     spec = importlib.util.spec_from_file_location(module_name, file_path)
 
     if spec is None:
-        raise ImportError("Spec is None")
+        raise ValueError("Spec is None")
 
     module = importlib.util.module_from_spec(spec)
     sys.modules[module_name] = module
 
     if spec.loader is None:
-        raise ImportError("Spec.loader is None")
+        raise ValueError("Spec.loader is None")
 
     spec.loader.exec_module(module)
     return module
