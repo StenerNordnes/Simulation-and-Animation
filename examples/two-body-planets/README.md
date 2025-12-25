@@ -60,7 +60,7 @@ The simulation uses the following default parameters (defined in `two-planets.py
 
 ### Example Preview
 
-<video src="two-planets.mp4" controls title="Two Planets Simulation" width="100%"></video>
+![Two Planets Simulation](two-planets.gif)
 
 ## Usage
 

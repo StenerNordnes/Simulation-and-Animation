@@ -13,7 +13,7 @@ from solver.numerical_solver import NumericalSolver, rk4_tableau
 
 # G = 6.6743e-11
 G = 1
-save_path = os.path.abspath(__file__).replace(".py", ".mp4")
+save_path = os.path.abspath(__file__).replace(".py", ".gif")
 
 
 def gravityForce(
