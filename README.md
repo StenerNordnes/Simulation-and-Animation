@@ -77,9 +77,12 @@ The `examples/` directory contains various physical simulations. You can run the
 
 Available examples include:
 
-- **Spring Pendulum**: A pendulum attached to a spring (`examples/pendulum-on-spring`).
-- **Mass on Wheel**: A rod connected to a rotating wheel (`examples/mass-wheel-rotation`).
+- **Three body problem**: A simulation of three gravitationally interacting bodies (`examples/three-body-problem`).
+  ![Three Planet Simulation](examples/three-body-problem/three-planets.gif)
 - **Two Planets**: A two-body gravitational simulation (`examples/two-body-planets`).
+  ![Two Planets Simulation](examples/two-body-planets/two-planets.gif)
+- **Double Pendulum**: A chaotic double pendulum simulation (`examples/double-pendulum`).
+  ![Double Pendulum Animation](examples/double-pendulum/double-pendulum.gif)
 
 To switch examples in `main.py`:
 
@@ -93,7 +96,7 @@ def main():
 
 ## Project Structure
 
-```
+```txt
 .
 ├── animation/              # Animation engine
 │   ├── objects.py          # Classes for shapes (Circle, Rectangle, Spring, etc.)
