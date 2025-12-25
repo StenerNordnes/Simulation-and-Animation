@@ -477,6 +477,7 @@ def animate_objects(
     ylabel: str = "Y-axis",
     save_path: str | None = None,
     legend: bool = False,
+    show_grid: bool = True,
 ):
     """
     Animates a list of objects based on their trajectories.
@@ -548,7 +549,7 @@ def animate_objects(
     ax.set_ylabel(ylabel)
     ax.set_title(title)
     ax.set_aspect("equal", adjustable="box")
-    ax.grid(True)
+    ax.grid(show_grid)
 
     # Lines to trace paths
     lines = [
@@ -621,7 +622,9 @@ def animate_objects(
             writer_name = (
                 "ffmpeg"
                 if save_path.endswith(".mp4")
-                else "pillow" if save_path.endswith(".gif") else None
+                else "pillow"
+                if save_path.endswith(".gif")
+                else None
             )
             if writer_name:
                 ani.save(save_path, writer=writer_name, dpi=150)

@@ -57,7 +57,7 @@ def make_system(planet_masses: np.ndarray):
     def f(t, state: np.ndarray):
         state_dot = np.zeros(len(planet_masses) * NUM_STATES)
 
-        for i, pl_mass in enumerate(planet_masses):
+        for i, curr_mass in enumerate(planet_masses):
             total_accel = np.zeros(NUM_DIM)
 
             for j, attr_mass in enumerate(planet_masses):
@@ -67,8 +67,8 @@ def make_system(planet_masses: np.ndarray):
                 curr_pos = state[get_pos(i)]
                 attr_pos = state[get_pos(j)]
 
-                gravity_force = gravityForce(attr_pos, curr_pos, attr_mass, pl_mass)
-                gravity_accel: np.ndarray = gravity_force / pl_mass
+                gravity_force = gravityForce(attr_pos, curr_pos, attr_mass, curr_mass)
+                gravity_accel: np.ndarray = gravity_force / curr_mass
 
                 total_accel += gravity_accel
 
@@ -89,11 +89,11 @@ def main():
     vel_x = 0.46620368
     vel_y = 0.43236573
 
-    planet1 = Planet(100e8, [pos_x, pos_y, -vel_x / 2, -vel_y / 2])
-    planet2 = Planet(100e8, [-pos_x, -pos_y, -vel_x / 2, -vel_y / 2])
-    planet3 = Planet(100e8, [0, 0, vel_x, vel_y])
-
-    planets = [planet1, planet2, planet3]
+    planets = [
+        Planet(100e8, [pos_x, pos_y, -vel_x / 2, -vel_y / 2]),
+        Planet(100e8, [-pos_x, -pos_y, -vel_x / 2, -vel_y / 2]),
+        Planet(100e8, [0, 0, vel_x, vel_y]),
+    ]
 
     initial_state = np.array([pl.initial_state for pl in planets]).flatten()
     masses = np.array([pl.mass for pl in planets])

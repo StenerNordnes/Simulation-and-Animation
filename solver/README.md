@@ -1,6 +1,6 @@
 # Numerical Solver Module Documentation
 
-This module implements a flexible **Explicit Runge-Kutta (ERK)** solver for Ordinary Differential Equations (ODEs). It is designed to be modular, allowing users to define custom methods via Butcher Tableaus or use pre-defined standard methods (such as Forward Euler or RK4).
+This module implements an **Explicit Runge-Kutta (ERK)** solver for Ordinary Differential Equations (ODEs). It is designed to be modular, allowing definition of custom methods via Butcher Tableaus or use of pre-defined standard methods (such as Forward Euler or RK4).
 
 ## Mathematical Background
 

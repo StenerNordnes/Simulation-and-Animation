@@ -50,9 +50,17 @@ three_body_problem = _load_module_from_file(
 )
 three_body_problem_main = three_body_problem.main
 
+
+double_pendulum = _load_module_from_file(
+    "double_pendulum", examples_dir / "double-pendulum" / "double-pendulum.py"
+)
+double_pendulum_main = double_pendulum.main
+
+
 __all__ = [
     "spring_pendulum_main",
     "mass_wheel_main",
     "two_planets_main",
     "three_body_problem_main",
+    "double_pendulum",
 ]
