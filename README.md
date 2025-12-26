@@ -1,10 +1,10 @@
 # Simulation and Animation Framework
 
-A modular Python framework for simulating physical systems using numerical methods and visualizing them with 2D/3D animations. This project combines a flexible ODE/DAE solver with an object-oriented animation engine.
+A modular Python framework for simulating physical systems using numerical methods and visualizing them with 2D/3D animations. This project combines an ODE solver with an object-oriented animation engine.
 
 ## Features
 
-- **Numerical Solver**: Custom implementation of Explicit Runge-Kutta methods (RK4, Euler, Heun, etc.) for solving Ordinary Differential Equations (ODEs) and Differential-Algebraic Equations (DAEs).
+- **Numerical Solver**: Custom implementation of Explicit Runge-Kutta methods (RK4, Euler, Heun, etc.) for solving Ordinary Differential Equations (ODEs).
 - **Animation Engine**:
   - **Object Animation**: Animate shapes like circles, rectangles, springs, and connecting rods.
   - **Trajectory Animation**: Visualize particle paths in 2D and 3D space.

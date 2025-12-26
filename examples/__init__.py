@@ -56,6 +56,12 @@ double_pendulum = _load_module_from_file(
 )
 double_pendulum_main = double_pendulum.main
 
+schrodinger_equation = _load_module_from_file(
+    "schrodinger_equation",
+    examples_dir / "schrodinger-equation" / "schrodinger-equation.py",
+)
+schrodinger_equation_main = schrodinger_equation.main
+
 
 __all__ = [
     "spring_pendulum_main",
@@ -63,4 +69,5 @@ __all__ = [
     "two_planets_main",
     "three_body_problem_main",
     "double_pendulum",
+    "schrodinger_equation",
 ]

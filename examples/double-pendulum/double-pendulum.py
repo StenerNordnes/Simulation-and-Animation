@@ -14,8 +14,8 @@ save_path = os.path.abspath(__file__).replace(".py", ".gif")
 
 NUM_STATES = 4
 G = 9.81
-L1 = 100
-L2 = 100
+L1 = 50
+L2 = 50
 
 
 def make_system(masses: list[int]):
@@ -67,17 +67,17 @@ def main():
     x1 = L1 * np.sin(state[:, 0])
     y1 = -L1 * np.cos(state[:, 0])
     trajectory1 = np.vstack((x1, y1)).T
-    circle1 = Circle(trajectory1, 10)
+    circle1 = Circle(trajectory1, 2)
 
     x2 = x1 + L2 * np.sin(state[:, 1])
     y2 = y1 - L1 * np.cos(state[:, 1])
     trajectory2 = np.vstack((x2, y2)).T
-    circle2 = Circle(trajectory2, 10, show_trajectory=True)
+    circle2 = Circle(trajectory2, 2, show_trajectory=True)
 
     origin = Circle(trajectory1 * 0, 0.1, show_trajectory=False)
 
-    rod1 = ConnectiveRod(origin, circle1)
-    rod2 = ConnectiveRod(circle1, circle2)
+    rod1 = ConnectiveRod(origin, circle1, width=1)
+    rod2 = ConnectiveRod(circle1, circle2, width=1)
 
     animate_objects(
         [circle1, circle2, rod1, rod2],

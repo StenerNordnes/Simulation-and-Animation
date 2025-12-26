@@ -483,6 +483,17 @@ def animate_objects(
     Animates a list of objects based on their trajectories.
     Ensures objects are updated in order (important for dependencies like ConnectiveRod).
     Plots path lines based on the object's actual (x, y) position each frame.
+
+    Args:
+        objects (list[AnimatableObject]): A list of AnimatableObject instances to be animated.
+        interval (float, optional): Delay between frames in milliseconds. Defaults to 20.
+        title (str, optional): Title of the animation plot. Defaults to "Animation".
+        xlabel (str, optional): Label for the X-axis. Defaults to "X-axis".
+        ylabel (str, optional): Label for the Y-axis. Defaults to "Y-axis".
+        save_path (str | None, optional): Path to save the animation (e.g., 'anim.mp4' or 'anim.gif'). 
+                                          If None, the animation is shown. Defaults to None.
+        legend (bool, optional): Whether to display a legend. Defaults to False.
+        show_grid (bool, optional): Whether to display a grid. Defaults to True.
     """
     fig, ax = plt.subplots()
 
@@ -613,8 +624,6 @@ def animate_objects(
         blit=False,  # Set blit=False is MUCH simpler with patches being added/modified
         repeat=False,
     )
-
-    # ... (rest of save/show logic remains the same) ...
 
     if save_path:
         try:

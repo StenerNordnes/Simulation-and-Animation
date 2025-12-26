@@ -1,8 +1,8 @@
 import time
 from typing import Callable
-
 import numpy as np
 from numpy.typing import NDArray
+from tqdm import tqdm
 
 
 class ButcherTableau:
@@ -55,6 +55,23 @@ rk4_tableau = ButcherTableau(
     a=np.array([[0, 0, 0, 0], [1 / 2, 0, 0, 0], [0, 1 / 2, 0, 0], [0, 0, 1, 0]]),
     b=np.array([1 / 6, 1 / 3, 1 / 3, 1 / 6]),
     c=np.array([0, 1 / 2, 1 / 2, 1]),
+)
+
+# 6. Runge-Kutta-Fehlberg (RK5 part of RK45, Explicit, 5th Order)
+# Note: This is just the 5th order tableau from the RKF45 pair.
+rk5_tableau = ButcherTableau(
+    a=np.array(
+        [
+            [0, 0, 0, 0, 0, 0],
+            [1 / 4, 0, 0, 0, 0, 0],
+            [3 / 32, 9 / 32, 0, 0, 0, 0],
+            [1932 / 2197, -7200 / 2197, 7296 / 2197, 0, 0, 0],
+            [439 / 216, -8, 3680 / 513, -845 / 4104, 0, 0],
+            [-8 / 27, 2, -3544 / 2565, 1859 / 4104, -11 / 40, 0],
+        ]
+    ),
+    b=np.array([16 / 135, 0, 6656 / 12825, 28561 / 56430, -9 / 50, 2 / 55]),
+    c=np.array([0, 1 / 4, 3 / 8, 12 / 13, 1, 1 / 2]),
 )
 
 
@@ -128,7 +145,7 @@ class NumericalSolver:
         timeSeries = np.zeros((n_steps + 1, len(initial_state)))
         timeSeries[0] = initial_state
 
-        for i in range(n_steps):
+        for i in tqdm(range(n_steps)):
             t_k = start_time + i * dt
             x_k = timeSeries[i]
 
