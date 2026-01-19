@@ -1,9 +1,10 @@
 # Animation Module Documentation
 
-This module provides a comprehensive framework for creating 2D and 3D animations of physical systems. It is split into two main components:
+This module provides a comprehensive framework for creating 2D and 3D animations of physical systems. It is split into three main components:
 
 1. **Object Animation (`objects.py`)**: For animating complex shapes (rectangles, circles, springs) and their interactions.
 2. **Trajectory Animation (`trajectories.py`)**: For visualizing raw particle paths or data points in 2D and 3D space.
+3. **Surface Animation (`surface.py`)**: For animating 3D surfaces over time, ideal for visualizing PDEs and field simulations.
 
 ---
 
@@ -121,6 +122,43 @@ def animate_trajectory_3d(
 
 ---
 
+## 3. Surface Animation (`surface.py`)
+
+This submodule provides functionality for animating 3D surfaces that evolve over time. It is particularly useful for visualizing solutions to partial differential equations (PDEs), heat diffusion, wave propagation, and other field-based simulations.
+
+### Function: `animate_surface`
+
+Animates a 3D surface based on time-series data.
+
+```python
+def animate_surface(
+    data: np.ndarray,
+    x_grid: np.ndarray | None = None,
+    y_grid: np.ndarray | None = None,
+    interval: int = 50,
+    title: str = "Surface Animation",
+    xlabel: str = "X-axis",
+    ylabel: str = "Y-axis",
+    zlabel: str = "Z-axis",
+    zlim: tuple[float, float] | None = None,
+    save_path: str | None = None,
+    cmap: str = "viridis",
+    show_grid: bool = True
+)
+```
+
+**Parameters:**
+
+- **data**: A 3D NumPy array of shape $(T, N, M)$ where $T$ is the number of time steps, $N$ is the grid height, and $M$ is the grid width.
+- **x_grid, y_grid**: Optional 2D arrays for custom X and Y coordinate grids. If `None`, defaults to integer indices.
+- **interval**: Delay between frames in milliseconds.
+- **zlim**: Fixed Z-axis limits as a tuple `(min, max)`. If `None`, automatically inferred from data.
+- **cmap**: Colormap name for the surface (e.g., `"viridis"`, `"plasma"`, `"coolwarm"`).
+- **save_path**: If provided, saves the animation to a file (e.g., `.mp4`, `.gif`).
+- **show_grid**: Boolean flag to show/hide the grid lines.
+
+---
+
 ## Usage Examples
 
 ### Example 1: Simple Pendulum (Object Animation)
@@ -165,4 +203,22 @@ y = r * np.sin(theta)
 path = np.vstack((x, y)).T
 
 animate_trajectory([path], title="Spiral", trajectory_colors=['red'])
+```
+
+### Example 3: Heat Diffusion (Surface Animation)
+
+```python
+import numpy as np
+from animation.surface import animate_surface
+
+# Simulate heat diffusion on a 2D grid
+T, N, M = 100, 50, 50
+data = np.zeros((T, N, M))
+for t in range(T):
+    x = np.linspace(-5, 5, M)
+    y = np.linspace(-5, 5, N)
+    X, Y = np.meshgrid(x, y)
+    data[t] = np.exp(-0.1*t) * np.exp(-(X**2 + Y**2) / (4 + 0.1*t))
+
+animate_surface(data, title="Heat Diffusion", cmap="hot")
 ```
