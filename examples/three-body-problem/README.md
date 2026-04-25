@@ -34,9 +34,9 @@ For each body, the acceleration is:
 
 The system state is a flattened vector of size $4 \times N$ (where $N=3$), containing position and velocity components for each planet:
 
-$$
+```math
 \mathbf{S} = [x_1, y_1, v_{x1}, v_{y1}, \dots, x_3, y_3, v_{x3}, v_{y3}]
-$$
+```
 
 ### Parameters
 

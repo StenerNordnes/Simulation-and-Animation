@@ -6,21 +6,21 @@ This module implements an **Explicit Runge-Kutta (ERK)** solver for Ordinary Dif
 
 The solver finds numerical approximations for initial value problems of the form:
 
-$$
+```math
 \frac{dy}{dt} = f(t, y), \quad y(t_0) = y_0
-$$
+```
 
 It uses the generalized Runge-Kutta method. For a step size $h$ (denoted as `dt` in the code), the next value $y_{n+1}$ is calculated as:
 
-$$
+```math
 y_{n+1} = y_n + h \sum_{i=1}^{s} b_i k_i
-$$
+```
 
 Where $k_i$ are the intermediate slopes (stages) calculated as:
 
-$$
+```math
 k_i = f(t_n + c_i h, \ y_n + h \sum_{j=1}^{s} a_{ij} k_j)
-$$
+```
 
 ### Butcher Tableau
 
@@ -28,13 +28,13 @@ The coefficients $A$ (matrix), $b$ (weights), and $c$ (nodes) are organized into
 
 The tableau is often represented as:
 
-$$
+```math
 \begin{array}{c|c}
 \mathbf{c} & A \\
 \hline
 & \mathbf{b}^T
 \end{array}
-$$
+```
 
 ---
 
@@ -121,9 +121,9 @@ If `profiling=True` is enabled, the `NumericalSolver` tracks the real-world time
 
 Below is an example of how to use the `NumericalSolver` to solve a simple Harmonic Oscillator (spring-mass system).
 
-$$
+```math
 \frac{d^2x}{dt^2} = -x \implies \begin{cases} \dot{x} = v \\ \dot{v} = -x \end{cases}
-$$
+```
 
 ```python
 import numpy as np

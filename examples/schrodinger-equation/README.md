@@ -6,9 +6,9 @@ This example simulates the time evolution of a quantum wave packet in a 2D poten
 
 The system is governed by the Time-Dependent Schrödinger Equation:
 
-$$
+```math
 i \hbar \frac{\partial \Psi}{\partial t} = \hat{H} \Psi
-$$
+```
 
 Where:
 
@@ -20,9 +20,9 @@ Where:
 
 We solve the equation on a 2D grid. The Laplacian $\nabla^2 \Psi$ is approximated using the finite difference method:
 
-$$
+```math
 \nabla^2 \Psi(x, y) \approx \frac{\Psi(x+h, y) + \Psi(x-h, y) + \Psi(x, y+h) + \Psi(x, y-h) - 4\Psi(x, y)}{h^2}
-$$
+```
 
 This transforms the partial differential equation into a system of coupled Ordinary Differential Equations (ODEs) for the value of $\Psi$ at each grid point.
 
@@ -32,19 +32,19 @@ This transforms the partial differential equation into a system of coupled Ordin
 
 Since $\Psi$ is complex, we split it into real and imaginary parts for the numerical solver:
 
-$$
+```math
 \mathbf{S} = [\text{Re}(\Psi_{0,0}), \dots, \text{Re}(\Psi_{N,N}), \text{Im}(\Psi_{0,0}), \dots, \text{Im}(\Psi_{N,N})]
-$$
+```
 
 The solver computes the time derivatives:
 
-$$
+```math
 \frac{d \text{Re}(\Psi)}{dt} = \text{Im}(\hat{H} \Psi) / \hbar
-$$
+```
 
-$$
+```math
 \frac{d \text{Im}(\Psi)}{dt} = -\text{Re}(\hat{H} \Psi) / \hbar
-$$
+```
 
 ### Simulation Setup
 

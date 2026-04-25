@@ -10,9 +10,9 @@ The simulation is governed by Newton's Law of Universal Gravitation and Newton's
 
 The force $\vec{F}_{12}$ exerted on body 1 by body 2 is given by:
 
-$$
+```math
 \vec{F}_{12} = G \frac{m_1 m_2}{|\vec{r}|^2} \hat{r}
-$$
+```
 
 Where:
 
@@ -26,12 +26,12 @@ Where:
 
 The system is described by a system of coupled Ordinary Differential Equations (ODEs). For each body $i$, the acceleration is determined by the total force acting on it:
 
-$$
+```math
 \begin{aligned}
 \frac{d\vec{r}_i}{dt} &= \vec{v}_i \\
 \frac{d\vec{v}_i}{dt} &= \frac{\vec{F}_{net}}{m_i}
 \end{aligned}
-$$
+```
 
 For this two-body system:
 
@@ -44,9 +44,9 @@ For this two-body system:
 
 The state of the system is represented by a single 8-dimensional vector containing positions and velocities for both bodies:
 
-$$
+```math
 \mathbf{S} = [x_1, y_1, v_{x1}, v_{y1}, x_2, y_2, v_{x2}, v_{y2}]
-$$
+```
 
 ### Parameters
 

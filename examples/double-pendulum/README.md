@@ -18,99 +18,99 @@ We define the system using the generalized coordinates $\theta_1$ and $\theta_2$
 
 First, we express the Cartesian positions in terms of the angles:
 
-$$
+```math
 \begin{aligned}
 x_1 &= L_1 \sin \theta_1 \\
 y_1 &= -L_1 \cos \theta_1 \\
 x_2 &= x_1 + L_2 \sin \theta_2 \\
 y_2 &= y_1 - L_2 \cos \theta_2
 \end{aligned}
-$$
+```
 
 Differentiating with respect to time yields the velocities:
 
-$$
+```math
 \begin{aligned}
 \dot{x}_1 &= L_1 \dot{\theta}_1 \cos \theta_1 \\
 \dot{y}_1 &= L_1 \dot{\theta}_1 \sin \theta_1 \\
 \dot{x}_2 &= \dot{x}_1 + L_2 \dot{\theta}_2 \cos \theta_2 \\
 \dot{y}_2 &= \dot{y}_1 + L_2 \dot{\theta}_2 \sin \theta_2
 \end{aligned}
-$$
+```
 
 ### 2. Kinetic Energy ($T$)
 
 The total kinetic energy is the sum of the energies of the individual masses:
 
-$$
+```math
 T = \frac{1}{2}m_1 (\dot{x}_1^2 + \dot{y}_1^2) + \frac{1}{2}m_2 (\dot{x}_2^2 + \dot{y}_2^2)
-$$
+```
 
 Substituting the velocity expressions and simplifying using trigonometric identities ($\sin^2 + \cos^2 = 1$) gives:
 
-$$
+```math
 T = \frac{1}{2}(m_1 + m_2) L_1^2 \dot{\theta}_1^2 + \frac{1}{2}m_2 L_2^2 \dot{\theta}_2^2 + m_2 L_1 L_2 \dot{\theta}_1 \dot{\theta}_2 \cos(\theta_1 - \theta_2)
-$$
+```
 
 ### 3. Potential Energy ($V$)
 
 Assuming the $y$-axis points upwards (so positions below the pivot are negative):
 
-$$
+```math
 V = m_1 g y_1 + m_2 g y_2
-$$
+```
 
 Substituting the position equations:
 
-$$
+```math
 V = -(m_1 + m_2) g L_1 \cos \theta_1 - m_2 g L_2 \cos \theta_2
-$$
+```
 
 ### 4. The Lagrangian
 
 The Lagrangian $\mathcal{L}$ is defined as the difference between kinetic and potential energy:
 
-$$
+```math
 \mathcal{L} = T - V
-$$
+```
 
-$$
+```math
 \mathcal{L} = \frac{1}{2}(m_1 + m_2) L_1^2 \dot{\theta}_1^2 + \frac{1}{2}m_2 L_2^2 \dot{\theta}_2^2 + m_2 L_1 L_2 \dot{\theta}_1 \dot{\theta}_2 \cos(\theta_1 - \theta_2) + (m_1 + m_2) g L_1 \cos \theta_1 + m_2 g L_2 \cos \theta_2
-$$
+```
 
 ### 5. Euler-Lagrange Equations
 
 To find the equations of motion, we apply the Euler-Lagrange equation for each coordinate $\theta_i$:
 
-$$
+```math
 \frac{d}{dt} \left( \frac{\partial \mathcal{L}}{\partial \dot{\theta}_i} \right) - \frac{\partial \mathcal{L}}{\partial \theta_i} = 0
-$$
+```
 
 Solving this system of derivatives results in two coupled second-order differential equations.
 
 **For $\theta_1$:**
 
-$$
+```math
 (m_1 + m_2) L_1 \ddot{\theta}_1 + m_2 L_2 \ddot{\theta}_2 \cos(\theta_1 - \theta_2) + m_2 L_2 \dot{\theta}_2^2 \sin(\theta_1 - \theta_2) + (m_1 + m_2) g \sin \theta_1 = 0
-$$
+```
 
 **For $\theta_2$:**
 
-$$
+```math
 L_2 \ddot{\theta}_2 + L_1 \ddot{\theta}_1 \cos(\theta_1 - \theta_2) - L_1 \dot{\theta}_1^2 \sin(\theta_1 - \theta_2) + g \sin \theta_2 = 0
-$$
+```
 
 ### Final Equations of Motion
 
 Solving the system above for the angular accelerations $\ddot{\theta}_1$ and $\ddot{\theta}_2$ yields the explicit forms required for numerical integration:
 
-$$
+```math
 \ddot{\theta}_1 = \frac{-g(2m_1 + m_2)\sin\theta_1 - m_2 g \sin(\theta_1 - 2\theta_2) - 2\sin(\theta_1 - \theta_2) m_2 (\dot{\theta}_2^2 L_2 + \dot{\theta}_1^2 L_1 \cos(\theta_1 - \theta_2))}{L_1 (2m_1 + m_2 - m_2 \cos(2\theta_1 - 2\theta_2))}
-$$
+```
 
-$$
+```math
 \ddot{\theta}_2 = \frac{2\sin(\theta_1 - \theta_2) (\dot{\theta}_1^2 L_1 (m_1 + m_2) + g(m_1 + m_2)\cos\theta_1 + \dot{\theta}_2^2 L_2 m_2 \cos(\theta_1 - \theta_2))}{L_2 (2m_1 + m_2 - m_2 \cos(2\theta_1 - 2\theta_2))}
-$$
+```
 
 ## Implementation Details
 
@@ -118,9 +118,9 @@ $$
 
 To solve these second-order ODEs numerically, we convert them into a system of four first-order ODEs. The state vector is:
 
-$$
+```math
 \mathbf{S} = [\theta_1, \theta_2, \omega_1, \omega_2]
-$$
+```
 
 Where $\omega = \dot{\theta}$ represents angular velocity. The derivative of the state vector is $[\omega_1, \omega_2, \ddot{\theta}_1, \ddot{\theta}_2]$.
 
