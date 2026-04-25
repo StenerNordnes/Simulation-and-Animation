@@ -10,9 +10,9 @@ The simulation generalizes Newton's Law of Universal Gravitation for $N$ bodies.
 
 The total force $\vec{F}_i$ exerted on body $i$ is the vector sum of the gravitational forces from all other bodies $j$:
 
-$$
+```math
 \vec{F}_i = \sum_{j \neq i} \vec{F}_{ij} = \sum_{j \neq i} G \frac{m_i m_j}{|\vec{r}_{ij}|^2 + \epsilon^2} \hat{r}_{ij}
-$$
+```
 
 Where:
 
@@ -24,9 +24,9 @@ Where:
 
 For each body, the acceleration is:
 
-$$
+```math
 \vec{a}_i = \frac{d^2\vec{r}_i}{dt^2} = \sum_{j \neq i} G \frac{m_j}{|\vec{r}_{ij}|^3} \vec{r}_{ij}
-$$
+```
 
 ## Implementation Details
 
