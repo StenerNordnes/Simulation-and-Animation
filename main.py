@@ -1,8 +1,8 @@
 from examples import (
-    spring_pendulum_main,
     mass_wheel_main,
-    two_planets_main,
+    spring_pendulum_main,
     three_body_problem_main,
+    two_planets_main,
 )
 
 
